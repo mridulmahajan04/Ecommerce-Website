@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    * {
+        margin: 0%;
+        padding: 0%;
+    }
+
+    body {
+        /* line-height: 1.5; */
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .navImg {
+        width: 100%;
+        height: 300px;
+        background-image: url('{{ url_for("static", filename="style/banner2.jpg") }}');
+        background-position: center;
+        background-size: cover;
+        margin-bottom: 5px;
+        min-width: 100%;
+        background-repeat: no-repeat;
+        min-height: 200px;
+    }
+
+    .navImg h2,
+    .navImg p {
+        color: white;
+        text-align: center;
+    }
+
+    .navImg h2 {
+        font-size: 42px;
+    }
+
+    .n {
+        color: white;
+        position: absolute;
+        top: 4%;
+    }
+
+    .product-section {
+        padding: 20px;
+        display: flex;
+    }
+
+    .product-section .pro-collection {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .product-section .product-cart {
+        width: 280px;
+        max-width: 300px;
+        border: 1px solid #ebebeb;
+        padding: 13px;
+        margin: 10px;
+        border-radius: 25px;
+        position: relative;
+        box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.02);
+        transition: box-shadow 0.2s;
+        flex-grow: 1;
+        flex-basis: calc(33.333% - 20px);
+        /* Adjust this percentage to control the number of products per row */
+        box-sizing: border-box;
+    }
+
+    .product-section .product-cart:hover {
+        box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .product-section .product-cart img {
+        width: 100%;
+        border-radius: 25px;
+    }
+
+    .product-section .product-cart span {
+        color: #969696;
+        font-weight: 500;
+        line-height: 30px;
+    }
+
+    .product-section .product-cart h4 {
+        font-size: 18px;
+        color: rgb(41, 41, 41);
+    }
+
+    .product-section .product-cart .stars {
+        color: #e6ae2c;
+        padding: 6px 0;
+    }
+
+    .product-section .product-cart .price {
+        color: #088178;
+        padding: 4px 0;
+    }
+
+    .product-section .product-cart .buy-icon {
+        color: #088178;
+        background-color: #c7e9e75e;
+        padding: 15px;
+        border-radius: 50px;
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+    main-img{
+        height:263px;
+    }
+</style>
+</head>
+</body>
+    {% with message = get_flashed_messages(with_categories=true) %}
+        {% if message %}
+            {% for category, messages in message %}
+                <script>alert('{{messages}}');</script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div>
+        <section class="product-section">
+            <div class="pro-collection">
+                {% if mark==true %}
+                    <h1>Cart is Empty</h1>
+                {% else %}
+                {% for product in product_detail %}
+                <div class="product-cart">
+                    {% set fname = url_for('static', filename='image/' + product.image) %}
+                    <a href="/cart/{{product.sno}}">
+                        <img src="{{ fname }}" alt="product image" class="main-img"/>
+                        <span>{{product.productname}}</span>
+                        <h4>{{product.productname}}</h4>
+                        <div class="stars">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </a>
+                    <h4 class="price">INR {{product.price}}</h4>
+                    <a href="#"><i class="fa-solid fa-cart-shopping buy-icon"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+    </div>
+    </section>
+    </div>
+</body>
+</html>

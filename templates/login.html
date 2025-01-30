@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="signin ,signin to this website">
+    <title>sign-in</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style/login.css')}}">
+
+    <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+    <!-- <link rel="icon" href="style/person.png" type="image/x-icon"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
+        integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"
+        integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ"
+        crossorigin="anonymous"></script>
+    <style>
+        i {
+            position: absolute;
+            color: white;
+            top: 4%;
+            right: 98%;
+        }
+    </style>
+</head>
+
+<body>
+    {% with message = get_flashed_messages(with_categories = true) %}
+    {% if message %}
+    {% for categories, message in message%}
+    <script>
+        alert('{{message}}')
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="body">
+        <div class="section">
+            <form action="/login" class="forms" method="POST">
+                <h2>Login</h2>
+                <ion-icon style="color:#fff;" name="mail-outline"></ion-icon>
+                <input type="text" name="username" id="fname" class="in">
+                <!-- <label for="">Email</label> -->
+                <br>
+                <ion-icon style="color:#fff;" name="lock-closed-outline"></ion-icon>
+                <input type="password" class="in" name="password">
+                <!-- <label for="">Password</label> -->
+                <br>
+                <div class="checkboc">
+                    <input type="checkbox" class="check">Remember Me
+                </div>
+                <button type="submit" class="but" name="but">Login</button>
+                <br>
+                <div class="reg">
+                    <p>Don't have a account&nbsp;<a href="{{url_for('register')}}" class="a">&nbsp;&nbsp; Register</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="icon" href="style/favicon_image.gif" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'style/style.css')}}">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static' ,filename = 'style/index.css')}}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        {% for category, message in messages %}
+      <script>
+            alert('{{ message | safe }}');
+        </script>
+        <!-- <div>
+            {{message}}
+        </div> -->
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <header>
+        <div id="header">
+            <div class="header-logo">
+                <a href="{{url_for('home')}}"><img src="{{url_for('static',filename='style/logo.png')}}" alt="" /></a>
+            </div>
+            <div class="header-list">
+                <nav class="header-list-nav">
+                    <ul>
+                        <li><a class="active" href="/">Home</a></li>
+                        <li><a href="/shop">Shop</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/about">About</a></li>
+                        {% if session.get('username') %} 
+                        <li><a href="/logout">logout</a></li>
+                        {% elif session.get('admin') %} 
+                        <li><a href="/admin">Admin</a></li>    
+                        <li><a href="/logout">logout</a></li>    
+                        {% else %}
+                        <li><a href="/login">login</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                <div class="header-list-icon">
+                    <a href="/cart"><i class="fa fa-bag-shopping"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="body">
+        <p class="para">Trade-in-offer</p>
+        <h1 class="h">Super value Deals</h1><br>
+        <h1 class="hh">On all products</h1><br>
+        <p class="para1">save more with coupons & upto 10% off!</p>
+        <h2 class="h2"><a href="/shop" class="a_h">Shop Now</a></h2>
+    </div>
+    <h1>Featured Products</h1>
+    <p>Summer Collection New Morden Design</p>
+    <section class="product-section" class="section-p1">
+        {% for products in product %}
+        <div class="pro-collection">
+            <div class="product-cart">
+                {% set fname = url_for('static', filename = 'image/' + products.image) %}
+                <a href="/shop/{{products.sno}}">
+                    <img src="{{fname}}" alt="product image" />
+                    <span>adidas</span>
+                    <h4>{{products.productname}}</h4>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                </a>
+                <h4 class="price">INR {{products.price}}</h4>
+                <a href="#"><i class="fa-solid fa-cart-shopping buy-icon"></i></a>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-col">
+                    <h4>company</h4>
+                    <ul>
+                        <li><a href="about.html">about us</a></li>
+                        <li><a href="privacy.html">privacy policy</a></li>
+                        <li><a href="affiliate.html">affiliate program</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>online shop</h4>
+                    <ul>
+                        <li><a href="shop_.php">Shirts</a></li>
+                        <li><a href="shop_.php">Half-sleeves Shirts</a></li>
+                        <li><a href="shop_.php">Half length Pants</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>follow us</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=100093111963271"><i
+                                class="fab fa-facebook-f c"></i></a>
+                        <a href="https://www.youtube.com/@MH-iz7yp"><i class="fab fa-youtube fa-lg c"></i></a>
+                        <a href="https://www.instagram.com/_ekart0001/"><i class="fab fa-instagram c"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

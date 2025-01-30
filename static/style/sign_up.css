@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,500&display=swap');
+
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: "poppins", sans-serif;
+}
+
+body {
+    width: 100%;
+    height: 100vh;
+    background-color: black;
+}
+
+.background {
+    background-image: url(wallpaperflare.com_wallpaper.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+    filter: blur(10px);
+}
+
+.container {
+    position: absolute;
+    width: 80%;
+    height: 500px;
+    top: 17%;
+    left: 14%;
+    border: none;
+    background-image: url(wallpaperflare.com_wallpaper.jpg);
+    background-position: center;
+    background-size: cover;
+    display:flex;
+    flex-direction:row;
+    border-radius: 35px;
+}
+
+.item {
+    width: 55%;
+    height: 100%;
+    background:transparent;
+    /* border:1px solid red; */
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login{
+    width:45%;
+    height:100%;
+    /* border:1px solid yellow; */
+    backdrop-filter:blur(10px);
+}
+
+.item h2 {
+    font-size: 2em;
+    color: white;
+    margin:10px;
+    padding: 0px 18px;
+}
+
+.item p {
+    color: white;
+    font-size:20px;
+    padding: 0px 25px;
+}
+.icon i{
+    /* background-color:white; */
+    color:#fff;
+    margin-left:20px;
+}
+
+.icon{
+    position: absolute;
+    top:71%;
+    left:17%;
+}
+
+.login{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+    position: relative;
+}
+
+.login h2{
+    color:#fff;
+    text-align: center;
+    font-size:2em;
+}
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    color:white;
+    margin-top:10px;
+}
+.input{
+    height: 41px;
+    width: 410px;
+    text-align: center;
+    margin-top: 10px;
+    border:none;
+    outline:none;
+    background:transparent;
+    border-bottom:2px solid #fff;;
+    color:white;
+}
+button{
+    width: 410px;
+    height: 49px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    background-color: hotpink;
+    margin-top: 20px;
+    cursor: pointer;
+}

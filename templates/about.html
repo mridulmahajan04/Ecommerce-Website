@@ -1,0 +1,56 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About us</title>
+    <meta name="keywords" content="About us ,about our website,motive of this website ,what M&H website is about">
+    <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename = 'style/about.css')}}">
+    <style>
+        .but {
+            background-color: black;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 10px;
+            position: absolute;
+            right: 25%;
+            bottom: 150px;
+        }
+
+        .i{
+            color:white;
+            position:absolute;
+            top:4%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="about-section">
+        <a href="index1.php">
+            <i class="fa-solid fa-arrow-left fa-lg i" name="i"></i>
+        </a>
+        <div class="inner-container">
+            <h1>About Us</h1>
+            <p class="text">
+                {{text}}
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure iste amet cupiditate dicta minima inventore vitae pariatur voluptatum, harum beatae perspiciatis quas, libero perferendis ad veritatis facilis ipsum tenetur nemo ullam vero repellendus asperiores officiis. Veritatis reiciendis doloribus eveniet eligendi pariatur possimus cumque quod debitis excepturi, impedit dolorem ipsa saepe, eos incidunt perspiciatis ut aperiam minus dolore, esse consectetur est consequatur? Reiciendis, culpa ex? Dolores vitae et corporis architecto quos assumenda repudiandae laudantium est magnam nihil alias vel, eveniet cum tenetur ducimus minima sint? Animi tempore at consequatur. Nobis assumenda commodi ea minima quod. Quasi sunt itaque quam eaque! Veniam.
+            </p>
+            <div class="skills">
+                <span><a href="https://www.instagram.com/_ekart0001/"><i
+                            class="fa-brands fa-instagram fa-2xl"></i></a></span>
+                <span><a href="https://www.facebook.com/profile.php?id=100093111963271"><i
+                            class="fa-brands fa-facebook fa-2xl"></i></a></span>
+                <span>                        <a href="https://www.youtube.com/@MH-iz7yp"><i class="fab fa-youtube fa-2xl c"></i></a>
+                </span>
+
+                <!-- <a href="index.php" class="but"> Home</a> -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

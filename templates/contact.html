@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="contact page of M&H website,How to Contact to M&H website ,Gmail of cM&H website,Phone number of M&H website,Location of M&H website">
+    <link rel="stylesheet" href="{{url_for('static',filename = 'style/contact.css')}}">
+    <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
+        integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"
+        integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ"
+        crossorigin="anonymous"></script>
+    <link rel="icon" href="{{ url_for('static',filename = 'style/favicon_image.gif')}}" type="image/x-icon">
+
+    <title>Contact-Us</title>
+</head>
+
+<body>
+<!-- <a href="index.php">
+            <i class="fa-solid fa-arrow-left fa-lg" name="i"></i>
+        </a> -->
+    <section>
+        <div class="container">
+            <div class="item">
+                <h1 align="left">Send a Message</h1>
+                <form action="" method="POST" action="/contact">
+                    <input type="text" name="email" placeholder="Enter your mail">
+                    <!-- <input type="password" name="pass" placeholder="Enter your Password"> -->
+                    <textarea cols="5" rows="5" name="text" style="    width: 399px;
+                    height: 136px; margin:10px;"></textarea>
+                    <button name="but">Send</button>
+                    <button name="but2" class="back" onclick="hrefFunction()"><a href="/">Back</button></a>
+                </form>
+            </div>
+            <div class="sidepannel">
+                
+                <h2 style="color:white">Contact Info</h2>
+                <i class="fa-sharp fa-solid fa-location-dot" class="i"></i>&nbsp;&nbsp;<p>1097 Mugla Chamba HP</p><br>
+                <i class="fas fa-paper-plane" class="i"></i>&nbsp;&nbsp;<p><a>mridulmahajan16@gmail.com<a></p><br>
+                <i class="fas fa-phone-alt" class="i"></i>&nbsp;&nbsp;<p>8219835321</p><Br>
+
+                <div class="icon">
+                    <a href="https://www.youtube.com/@MH-iz7yp"><i class="fab fa-youtube fa-lg"></i></a>
+                    <a href="https://www.instagram.com/_ekart0001/"><i class="fab fa-instagram fa-lg"></i></a>
+                    <!-- <a href=""><i class="fab fa-twitter fa-lg"></i></a> -->
+                    <a href="https://www.facebook.com/profile.php?id=100093111963271"><i class="fab fa-facebook fa-lg"></i></a>
+                </div>
+            </div>
+    </section>
+</body>
+<script>
+    function hrefFunction() {
+        window.location.href = "/";
+    }
+</script>
+
+</html>

@@ -1,0 +1,113 @@
+body {
+    background-image: url('contactBack.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 8%;
+}
+
+.container {
+    width: 70%;
+    height: 70vh;
+    background-color: white;
+    position: relative;
+
+}
+
+.item {
+    position: absolute;
+    left: 15%;
+    width: 85%;
+    height: 100%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 111px;
+}
+
+input {
+    width: 400px;
+    height: 200px;
+    height: 37px;
+    margin: 10px;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+}
+
+button {
+    margin: 10px;
+    width: 103px;
+    padding: 16px 20px;
+    background-color: #112d42;
+    color: white;
+    cursor: pointer;
+}
+
+.sidepannel {
+    width: 300px;
+    height: 450px;
+    /* border:1px solid red; */
+    position: absolute;
+    right: 87%;
+    top: 5%;
+    background-color: #112d42;
+}
+
+.sidepannel h2 {
+    text-align: center;
+}
+
+i {
+    color: white;
+    margin-left: 10px;
+    margin-bottom: 20px;
+}
+
+p {
+    /* margin:0px; */
+    padding: 0px;
+    color: white;
+    display: inline;
+    margin-bottom: 20px;
+}
+
+img {
+    width: 30px;
+    color: white;
+}
+
+i {
+    color: white;
+}
+
+.icon {
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    height: 6%;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content: center;
+    margin-right:4px;
+}
+.back{
+    position: absolute;
+    top: 290px;
+    left: 26%;
+    text-decoration: none;
+    color:white;
+}
+a{
+    text-decoration: none;
+    color:white;  
+}

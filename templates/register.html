@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="style/sign_up.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'style/sign_up.css')}}">
+    <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+    <title>sign_up</title>
+    <style>
+        .z {
+            color: white;
+            position: absolute;
+            top: 7%;
+            left: 2%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- {% with message = get_flashed_messages(with_categories = true) %}
+        {% if message %}
+            {% for categories, messages in message %}
+                <script>
+                    alert('{{ message | safe }}')
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %} -->
+    {% with message = get_flashed_messages(with_categories = true) %}
+    {% if message %}
+    {% for categories, message in message%}
+    <script>
+        alert('{{message}}')
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="background">
+
+    </div>
+    <div class="container">
+        <div class="item">
+            <a href="/login">
+                <i class="fa-solid fa-arrow-left fa-lg z" name="i"></i>
+            </a>
+            <!-- <h2><i class='bx bxl-xing'></i></h2> -->
+            <h2>Welcome! <br><span>To our Website</span></h2>
+            <p>Fill out the form enteries To Became Memeber of our Website</p>
+            <div class="icon">
+                <!-- <i class="fa-brands fa-twitter fa-xl"></i> -->
+                <a href="https://www.instagram.com/_ekart0001/"><i class="fa-brands fa-instagram fa-xl"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=100093111963271"> <i
+                        class="fa-brands fa-facebook fa-xl"></i></a>
+                <a href="https://www.youtube.com/@MH-iz7yp"> <i class="fa-brands fa-youtube fa-lg"></i></a>
+            </div>
+        </div>
+        <div class="login">
+            <h2>Sign Up</h2>
+            <form action="" class="form" method="POST" action="/register">
+                <input type="text" placeholder="Enter Username" class="input" name="username">
+                <input type="email" placeholder="Enter your Email" class="input" name="email">
+                <input type="password" placeholder="Enter your Password" class="input" name="pass"><br>
+                <label for=""><input type="checkbox" class="check" name="check">&nbsp;I agree with Conditions</label>
+                <button id="but" name="but">Sign up</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+
+</html>

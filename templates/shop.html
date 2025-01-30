@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
+        integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"
+        integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ"
+        crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0%;
+            padding: 0%;
+        }
+
+        body {
+            /* line-height: 1.5; */
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .navImg {
+            width: 100%;
+            height: 300px;
+            background-image: url('{{ url_for("static", filename="style/banner2.jpg") }}');
+            background-position: center;
+            background-size: cover;
+            margin-bottom: 5px;
+            min-width: 100%;
+            background-repeat: no-repeat;
+            min-height: 200px;
+        }
+
+        .navImg h2,
+        .navImg p {
+            color: white;
+            text-align: center;
+        }
+
+        .navImg h2 {
+            font-size: 42px;
+        }
+
+        .n {
+            color: white;
+            position: absolute;
+            top: 4%;
+        }
+
+        .product-section {
+            padding: 20px;
+            display: flex;
+        }
+
+        .product-section .pro-collection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .product-section .product-cart {
+            width: 280px;
+            max-width: 300px;
+            border: 1px solid #ebebeb;
+            padding: 13px;
+            margin: 10px;
+            border-radius: 25px;
+            position: relative;
+            box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.2s;
+            flex-grow: 1;
+            flex-basis: calc(33.333% - 20px);
+            /* Adjust this percentage to control the number of products per row */
+            box-sizing: border-box;
+        }
+
+        .product-section .product-cart:hover {
+            box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .product-section .product-cart img {
+            width: 100%;
+            border-radius: 25px;
+        }
+
+        .product-section .product-cart span {
+            color: #969696;
+            font-weight: 500;
+            line-height: 30px;
+        }
+
+        .product-section .product-cart h4 {
+            font-size: 18px;
+            color: rgb(41, 41, 41);
+        }
+
+        .product-section .product-cart .stars {
+            color: #e6ae2c;
+            padding: 6px 0;
+        }
+
+        .product-section .product-cart .price {
+            color: #088178;
+            padding: 4px 0;
+        }
+
+        .product-section .product-cart .buy-icon {
+            color: #088178;
+            background-color: #c7e9e75e;
+            padding: 15px;
+            border-radius: 50px;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+        main-img{
+            height:263px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navImg">
+        <h2>#Be Trendy</h2>
+        <p>Get Latest and trendy Products only on our website</p>
+        <a href="/"><i class="fa-solid fa-arrow-left fa-xs n"></i></a>
+    </div>
+
+    <div>
+        <section class="product-section">
+            <div class="pro-collection">
+                {% for product in products %}
+                <div class="product-cart">
+                    {% set fname = url_for('static', filename='image/' + product.image) %}
+                    <a href="/shop/{{product.sno}}">
+                        <img src="{{ fname }}" alt="product image" class="main-img"/>
+                        <span>{{product.productname}}</span>
+                        <h4>{{product.productname}}</h4>
+                        <div class="stars">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </a>
+                    <h4 class="price">INR {{product.price}}</h4>
+                    <a href="#"><i class="fa-solid fa-cart-shopping buy-icon"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+    </section>
+    </div>
+</body>
+
+</html>

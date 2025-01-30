@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- css link here  -->
+    <link rel="stylesheet" href="{{url_for('static', filename='style/select2.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='style/tailwind.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='style/styles.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='style/responsive.css')}}">
+</head>
+
+<body>
+
+    <div class="container py-20">
+        <div class="flex flex-wrap lg:flex-nowrap items-start gap-6">
+            <!-- cart billing start -->
+            <div class="cart-total lg:w-2/3 w-full p-8">
+                <h4 class="text-start text-2xl text-[#272343] font-semibold mb-6 font-display" style="    font-size: 19px;
+    margin: 0;">Hey, {{user}}</h4>
+                <h2 class="text-start text-2xl text-[#272343] font-semibold mb-6 font-display">Billing Information</h2>
+                <div>
+                    <form action="" class="">
+                        <div class="flex flex-col sm:flex-row gap-5 items-center mb-5">
+                            <div class=" w-full">
+                                <input type="text" placeholder="First Name"
+                                    class="input-box focus:outline-none focus:ring-2 focus:ring-accents font-display transition duration-300 ease-in-out">
+                            </div>
+
+                            <div class=" w-full">
+
+                                <input type="text" placeholder="Last Name"
+                                    class="input-box focus:outline-none  focus:ring-2 focus:ring-accents font-display transition duration-300 ease-in-out">
+                            </div>
+                        </div>
+                        <div class="w-full inline-flex mb-5">
+                            <textarea
+                                class="input-box focus:outline-none  focus:ring-2 focus:ring-accents font-display transition duration-300 ease-in-out"
+                                placeholder="Address" name="" id="" cols="10" rows="5"></textarea>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-5 items-center mb-5">
+                            <div class=" w-full">
+                                <input type="text" placeholder="Phone"
+                                    class="input-box focus:outline-none  focus:ring-2 focus:ring-accents font-display transition duration-300 ease-in-out">
+                            </div>
+
+                            <div class=" w-full">
+
+                                <input type="text" placeholder="Email"
+                                    class="input-box focus:outline-none  focus:ring-2 focus:ring-accents font-display transition duration-300 ease-in-out">
+                            </div>
+                            <div class=" w-full">
+
+                                <input type="text" placeholder="Enter a valid Coupon Code"
+                                    class="input-box focus:outline-none  focus:ring-2 focus:ring-accents font-display transition duration-300 ease-in-out"
+                                    id="coupan" name="coupan" oninput="validateCoupan()">
+                                <span id="coupon-error"></span>
+                            </div>
+                        </div>
+                        <div class="cursor-pointer">
+                            <input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent"
+                                class="cursor-pointer" type="checkbox" value="yes">
+                            <label for="wp-comment-cookies-consent">Ship to a different address</label>
+                        </div>
+                        <hr class="my-8">
+
+                        <div>
+                            <h2 class="mb-6 text-2xl text-[#272343] font-display font-semibold">Payment</h2>
+                            <!-- <div class="flex items-center mt-6">
+                                    <input id="default-radio-2" type="radio" value="" name="default-radio"
+                                    class="w-4 h-4  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 cursor-pointer">
+                                    <label for="default-radio-2" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Cash on Delivery</label>
+                                </div> -->
+                            <div class="flex items-center mb-4 ">
+                                <input checked id="default-radio-1" type="radio" value="" name="default-radio"
+                                    class="w-4 h-4">
+                                <label for="default-radio-1"
+                                    class="ml-2 text-[18px] leading-[110%] font-normal text-gray-black cursor-pointer">Cash
+                                    on Delivery</label>
+                            </div>
+                            <!-- <div class="my-8 border h-[1px] border-gray-black"></div> -->
+                            <hr>
+
+                            <div class="flex items-center gap-[27px] pb-6">
+
+                                <div class="flex items-center">
+                                    <input id="default-radio-2" type="radio" value="" name="default-radio"
+                                        class="w-4 h-4">
+                                    <label for="default-radio-2"
+                                        class="ml-2 text-[18px] leading-[110%] font-normal text-gray-black cursor-pointer">Paypel</label>
+                                </div>
+
+
+                            </div>
+
+                            <div class="bg-off-white rounded-lg p-6">
+                                <p class="font-display text-[14px] leading-[150%] font-normal text-dark-gray">Integer
+                                    mollis lectus non leo auctor consequat. Duis faucibus dui nibh, in congue sapien
+                                    imperdiet id. Pellentesque et elementum elit. Donec tempus, </p>
+                            </div>
+
+                        </div>
+                </div>
+            </div>
+            <!-- cart billing end -->
+
+
+
+            <!-- cart details start -->
+            <div class="cart-total p-8 h-auto lg:w-1/3 w-full">
+                <!-- cart item start  -->
+                <div class="flex justify-between items-center pb-4">
+                    <div class="flex items-center gap-3">
+
+                    </div>
+
+                </div>
+                <div class="flex justify-between items-center pb-4">
+                    <div class="flex items-center gap-3">
+                    </div>
+
+                </div>
+                <!-- cart item end -->
+
+                <!-- cart item start  -->
+                <div class="flex justify-between items-center pb-4">
+                    <div class="flex items-center gap-3">
+                        <div>
+                            {% set fname=url_for('static', filename='image/'+productprice.image) %}
+                            <img src="{{fname}}" alt="" style="width:100px;">
+                        </div>
+                        <div class="flex gap-[6px]">
+                            <p>{{productprice.productname}}</p>
+                            <span>X</span>
+                            <p>{{quantity}}</p>
+                        </div>
+
+                    </div>
+                    <!-- <p class="text-gray-black text-[16px] leading-[120%] font-display font-medium">Rs.{{(productprice.price | int) * quantity}}</p> -->
+
+                </div>
+                <!-- cart item end -->
+
+                <hr>
+
+
+                <div class="subtotal-info">
+
+                    <div class="flex justify-between items-center">
+                        <p class="common-hedding">Price</p>
+                        <p class="text-gray-black text-[16px] leading-[120%] font-display font-medium"
+                            id="priceofproducts">
+                            Rs.{{(productprice.price | int) * quantity}}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-4">
+                        <p class="common-hedding">discount</p>
+                        <p class="text-gray-black text-[16px] leading-[120%] font-display font-medium"
+                            id="discount-tag"></p>
+                    </div>
+                    <div class="flex justify-between items-center pt-4">
+                        <p class="common-hedding">shipping </p>
+                        <p class="text-gray-black text-[16px] leading-[120%] font-display font-medium">Free</p>
+                    </div>
+                    <hr>
+                    <div class="flex justify-between items-center">
+                        <p class="common-hedding">Total:</p>
+                        <p class="text-gray-black text-[22px] leading-[120%] font-display font-semibold"
+                            id="priceofproduct">
+                            Rs.{{((productprice.price | int) * quantity)}}</p>
+                    </div>
+
+                    <div class="cursor-pointer pt-[34px]">
+                        <input id="wp-comment-cookies-consent1" name="wp-comment-cookies-consent" class="cursor-pointer"
+                            type="checkbox" value="yes">
+                        <label for="wp-comment-cookies-consent1"
+                            class="text-dark-gray text-[14px] font-display leading-[110%] font-normal">Remember all
+                            information for faster payments</label>
+                    </div>
+
+                    <button
+                        class="w-full flex gap-3 items-center justify-center mt-5 bg-accents hover:bg-[#272343] rounded-lg transition-all duration-300 py-[16px] text-[18px] font-bold font-display leading-[110%] text-gray-white  "
+                        id="submit-button"><a href="{{url_for('home')}}">Place
+                        Order</a>
+                        <span>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.5 7.5L20 12M20 12L15.5 16.5M20 12H4" stroke="white" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- cart details end -->
+        </div>
+    </div>
+    <!-- Sign In Form End -->
+
+
+    <!-- footer area end -->
+
+    <!-- script file here -->
+    <script src="./public/assets/plugins/js/jquery.js"></script>
+    <script src="./public/assets/plugins/js/swipper.js"></script>
+    <script src="./public/assets/plugins/js/select2.js"></script>
+    <script src="./public/assets/plugins/js/mixitUp.js"></script>
+    <script src="./public/js/app.js"></script>
+
+    <script src="{{url_for('static', filename='style/jquery.js')}}"></script>
+    <script src="{{url_for('static', filename='style/swipper.js')}}"></script>
+    <script src="{{url_for('static', filename='style/select2.js')}}"></script>
+    <script src="{{url_for('static', filename='style/mixitUp.js')}}"></script>
+    <script src="{{url_for('static', filename='style/app.js')}}"></script>
+    <script>
+        async function validateCoupan() {
+            const couponInput = document.getElementById('coupan');
+            const couponError = document.getElementById('coupon-error');
+            const couponCode = couponInput.value;
+            if (couponCode.trim() === '') {
+                couponError.textContent = ''; // Clear any existing error message
+                return;
+            }
+            const response = await fetch('/validate_coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ coupon_code: couponCode })
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                couponError.textContent = result.error;
+                couponError.style.color = 'red';
+            } else {
+                couponError.textContent = result.success;
+                couponError.style.color = 'green';
+                document.getElementById('discount-tag').textContent = `${result.discount}% off!`;
+                var z = document.getElementById('priceofproducts').textContent.trim(); // Retrieve text
+                z = z.replace('Rs.', ''); // Remove "Rs."
+                z = parseFloat(z); // Convert to number
+
+                // Calculate the final price after discount
+                var fin_res = z - ((z * result.discount) / 100);
+
+                // Update the total price element
+                document.getElementById('priceofproduct').textContent = `Rs.${fin_res.toFixed(2)}`; // Add "Rs." and show two decimal points
+
+
+            }
+
+        }
+        document.getElementById('submit-button').addEventListener('click', function () {
+            // Show an alert
+            alert('Form submitted successfully!');
+
+            // Redirect to the main page
+            window.location.href = 'templates/index.html'; // Replace 'main_page.html' with the actual path of your main page
+        });
+
+    </script>
+</body>
+
+</html>
