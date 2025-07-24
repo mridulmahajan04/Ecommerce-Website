@@ -80,30 +80,33 @@
     <form id="productForm" enctype="multipart/form-data" method="POST" action="/addproduct">
         <div class="form-group">
             <label for="productName" >Product Name:</label>
-            <input type="text" id="productName" name="productName" >
+            <input type="text" id="productName" name="productName" required>
         </div>
         <div class="form-group">
             <label for="productPrice">Price:</label>
-            <input type="number" id="productPrice" name="productPrice" min="0" step="0.01" >
+            <input type="number" id="productPrice" name="productPrice" min="0" step="0.01" required>
         </div>
         <div class="form-group">
             <label for="productDescription">Description:</label>
-            <textarea id="productDescription" name="productDescription" rows="4" ></textarea>
+            <textarea id="productDescription" name="productDescription" rows="4" required></textarea>
         </div>
         <div class="form-group">
         <label for="productImage1">Product Image:</label>
-            <input type="file" id="productImage1" name="product_image1"  >
+            <input type="file" id="productImage1" name="product_image1" required>
             <label for="productImage2">Product Image:</label>
-            <input type="file" id="productImage2" name="product_image2"  >
+            <input type="file" id="productImage2" name="product_image2" required>
             <label for="productImage3">Product Image:</label>
-            <input type="file" id="productImage3" name="product_image3"  >
+            <input type="file" id="productImage3" name="product_image3" required>
 
             <label for="productNumber">Product Number:</label>
             <input type="text" id="productNumber" name="productNumber"  >
         </div>
         <div class="form-group">
             <button type="submit" name='submit'>Add Product</button>
-            <button type="submit" class="button"><a href="/">Home</a></buttin>
+        </div>
+        <!-- Home button as a styled link, outside the form to avoid form validation -->
+        <div style="text-align:center;">
+            <a href="/" class="button" style="display:inline-block; text-align:center; padding:10px 20px; background-color:#007bff; color:#fff; border-radius:4px; text-decoration:none; margin:10px;">Home</a>
         </div>
     </form>
 </div>

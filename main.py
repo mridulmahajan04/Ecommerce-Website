@@ -10,14 +10,12 @@ from werkzeug.utils import secure_filename
 from base64 import b64encode
 from flask_session import Session
 from sqlalchemy import func
+from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+import os
+import uuid
 
-with open('config.json') as c:
-    params = json.load(c)["database"]
-
-with open('config.json') as c:
-    data = json.load(c)['About']
-
-
+load_dotenv()
 localserver = True
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -27,16 +25,16 @@ app.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_USE_SSL=True,
     MAIL_PORT='465',
-    MAIL_USERNAME=params['gmail_user'],
-    MAIL_PASSWORD=params['gmail_password']
+    MAIL_USERNAME=os.getenv('GMAIL_USER'),
+    MAIL_PASSWORD=os.getenv('GMAIL_PASSWORD')
 )
 
-app.config['UPLOAD_FOLDER'] = params['upload_location']
+app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_LOCATION')
 mail = Mail(app)
 if localserver:
-    app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('LOCAL_URI')
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('LOCAL_URI')
 db = SQLAlchemy(app)
 
 # All Database
@@ -54,7 +52,7 @@ class Register(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
 
 class Cart(db.Model):
@@ -82,12 +80,53 @@ def home():
     product = Products.query.all()
     return render_template('index.html', product=product[:5])
 
+# Quicksort algorithm for sorting products
+
+def quicksort_products(products, key, reverse=False):
+    if len(products) <= 1:
+        return products
+    pivot = key(products[0])
+    less = [p for p in products[1:] if key(p) < pivot]
+    equal = [p for p in products if key(p) == pivot]
+    greater = [p for p in products[1:] if key(p) > pivot]
+    sorted_list = quicksort_products(less, key) + equal + quicksort_products(greater, key)
+    return sorted_list[::-1] if reverse else sorted_list
+
 # Shop Page
 @app.route('/shop')
 def shop():
+    sort_by = request.args.get('sort', 'default')
     products = Products.query.all()
+    # Use quicksort to sort products based on user selection
+    if sort_by == 'price_asc':
+        products = quicksort_products(products, key=lambda p: int(p.price))
+    elif sort_by == 'price_desc':
+        products = quicksort_products(products, key=lambda p: int(p.price), reverse=True)
+    elif sort_by == 'name_asc':
+        products = quicksort_products(products, key=lambda p: p.productname.lower())
+    elif sort_by == 'name_desc':
+        products = quicksort_products(products, key=lambda p: p.productname.lower(), reverse=True)
+    # else: default order from DB
     return render_template('shop.html', products=products)
 
+# Global dictionary to cache product details by their ID (sno)
+product_cache = {}
+
+# Helper function to get product by ID with caching
+def get_product_by_id(product_id):
+    """
+    Returns the product with the given product_id (sno).
+    Checks the cache first; if not found, fetches from the database and stores in cache.
+    """
+    # Check if product is already in cache
+    if product_id in product_cache:
+        # Return cached product
+        return product_cache[product_id]
+    # Fetch from database if not in cache
+    product = Products.query.filter_by(sno=product_id).first()
+    # Store in cache for future requests
+    product_cache[product_id] = product
+    return product
 
 @app.route('/shop/<string:id>', methods=["GET", "POST"])
 def shop_product(id):
@@ -128,14 +167,14 @@ def shop_product(id):
         else:
             flash('First login Then You can add to cart/Buy this product')
             return redirect(url_for('login'))
-    product = Products.query.filter_by(sno=id).first()
+    product = get_product_by_id(id)  # Use cache-aware function
     return render_template('product.html', product=product)
 
 
 
 @app.route('/about')
 def about():
-    return render_template('about.html', text=data['text'])
+    return render_template('about.html', text="I want about my website")
 
 
 # Admin Pannel
@@ -180,11 +219,37 @@ def addproduct():
         image = request.files['product_image1']
         image2 = request.files['product_image2']
         image3 = request.files['product_image3']
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image.filename)))
-        image2.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image2.filename)))
-        image3.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image3.filename)))
-        entry = Products(productname=product_name, description=description, price=product_price, image=image.filename,
-                         image2=image2.filename, image3=image3.filename)
+        # Debug prints
+        print("UPLOAD_FOLDER:", app.config['UPLOAD_FOLDER'])
+        print("Image1 filename:", image.filename)
+        print("Image2 filename:", image2.filename)
+        print("Image3 filename:", image3.filename)
+        # Secure filenames
+        filename1 = secure_filename(image.filename)
+        filename2 = secure_filename(image2.filename)
+        filename3 = secure_filename(image3.filename)
+        print("Secure filename1:", filename1)
+        print("Secure filename2:", filename2)
+        print("Secure filename3:", filename3)
+        # Check for empty filenames
+        if not filename1 or not filename2 or not filename3:
+            flash('One or more images not selected or invalid file name.', 'danger')
+            return redirect(request.url)
+        # Ensure upload folder exists
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        # Full save paths
+        save_path1 = os.path.join(app.config['UPLOAD_FOLDER'], filename1)
+        save_path2 = os.path.join(app.config['UPLOAD_FOLDER'], filename2)
+        save_path3 = os.path.join(app.config['UPLOAD_FOLDER'], filename3)
+        print("Full save path1:", save_path1)
+        print("Full save path2:", save_path2)
+        print("Full save path3:", save_path3)
+        # Save images
+        image.save(save_path1)
+        image2.save(save_path2)
+        image3.save(save_path3)
+        entry = Products(productname=product_name, description=description, price=product_price, image=filename1,
+                         image2=filename2, image3=filename3)
         db.session.add(entry)
         db.session.commit()
 
@@ -225,7 +290,9 @@ def register():
         if(username1 or email1):
             flash('User Already Existed with this credentials')
         else:
-            entry = Register(user=username, email=email, password=passw)
+            # Hash the password before storing it
+            hashed_pw = generate_password_hash(passw)
+            entry = Register(user=username, email=email, password=hashed_pw)
             db.session.add(entry)
             db.session.commit()
 
@@ -238,19 +305,27 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         user = Register.query.filter_by(user=username).first()
-        print(user.password)
-        if username == params['Admin'] and password == params['Pass']:
+        # if not user :
+        #     flash('User not found.', 'danger')
+        #     return render_template('login.html')
+        # Now safe to access user.password
+        # Use environment variables for admin credentials
+        ADMIN_USER = os.getenv('ADMIN_USER')
+        ADMIN_PASS = os.getenv('ADMIN_PASS')
+        print(ADMIN_USER)
+        print(ADMIN_PASS)
+        if username == ADMIN_USER and password == ADMIN_PASS:
             session['admin'] = username
             flash('Hey! You are Successfully Logged in to Website as Admin', 'success')
             return redirect(url_for("home")) 
         
-        
-        if user and password == user.password:
+        # Check hashed password
+        if user and check_password_hash(user.password, password):
             session['username'] = username
             flash('Youre Successfully Logged into our website', 'success')
             return redirect(url_for("home"))
         
-        if user and password != user.password:
+        if user and not check_password_hash(user.password, password):
             flash('The Password you entered is not Correct please Try Again', 'success')
             # return redirect(url_for("login"))
 
@@ -260,35 +335,45 @@ def login():
     
 
     return render_template('login.html')
-
-
+ 
 
 @app.route('/cart', defaults={'id': None}, methods=["GET", "POST"])
 @app.route('/shop/<string:id>/cart', methods=["GET", "POST"])
 def cart(id):
-        if session.get('username'):
-            user = session['username']
-            print(session['username'])
-            cartitems = Cart.query.filter_by(userid=user).all()
-            if cartitems:
-                product_ids = [item.productid for item in cartitems]
-                product_detail = []
-                for product_id in product_ids:
-                    product_details = Products.query.filter_by(sno=product_id).first() 
-                    if product_details:
-                        product_detail.append(product_details)
-                print(product_detail)
-                return render_template('cart.html', cartitems=cartitems, product_detail=product_detail)
-            else:
-                flash('Your Cart is Empty', 'success')
-                mark=True
-                return render_template('cart.html', mark=mark)
+    if session.get('username'):
+        user = session['username']
+        print(session['username'])
+        # Query cart items based on user
+        cartitems = Cart.query.filter_by(userid=user).all()
+        if cartitems:
+            # Get all product IDs in the cart
+            product_ids = [item.productid for item in cartitems]
+            # Fetch all products in one query to avoid N+1 problem
+            products = Products.query.filter(Products.sno.in_(product_ids)).all()
+            # Build a mapping from product id to product
+            product_map = {str(product.sno): product for product in products}
+            # Match products to cart order
+            product_detail = [product_map.get(str(pid)) for pid in product_ids if str(pid) in product_map]
+            print(product_detail)
+            # Return the cart page with cart details
+            return render_template('cart.html', cartitems=cartitems, product_detail=product_detail)
+        else:
+            # If cart is empty, flash a message and return cart page
+            flash('Your Cart is Empty', 'success')
+            mark = True  # Use 'mark' to indicate cart is empty
+            return render_template('cart.html', mark=mark)
+    
+    elif session.get('admin'):
+        # If admin is logged in, ask them to log in as a client first
+        flash('You need first login as Client', 'success')
+        session.pop('admin', None)
+        return redirect('/login')
+    
+    else:
+        # If no user or admin session is found, redirect to login page
+        return render_template('login.html')
 
-        if session.get('admin'):
-            flash('You need first login as Client', 'success')
-            session.pop('admin', None)
-            return redirect('/login')
-        
+
 
 @app.route('/logout')
 def logout():
@@ -320,15 +405,15 @@ def contact():
         db.session.commit()
         mail.send_message('New Message from ' + email,
                           sender=email,
-                          recipients=[params['gmail_user']],
+                          recipients=[os.getenv('GMAIL_USER')],
                           body=mess
                           )
     return render_template('contact.html')
 
 @app.route('/cart/<int:id>')
 def cart_product(id):
-    product=Products.query.filter_by(sno=id).first()
-    return render_template('product.html',product=product)
+    product = get_product_by_id(id)  # Use cache-aware function
+    return render_template('product.html', product=product)
 
 
 @app.route('/validate_coupon', methods=['POST'])
@@ -343,16 +428,6 @@ def validate_coupon():
     else:
         return jsonify({'error': 'Invalid coupon code.'})
 
-
-
-# @app.route('/checkout')
-# def checkout():
-#     if session.get('username'):
-#      user=session['username']
-#      return render_template('checkout.html', user=session['username'])
-#     else:
-#         flash('You first need to login', 'success')
-#         return redirect('login')
 
 if __name__ == '__main__':
     app.run(debug=True)

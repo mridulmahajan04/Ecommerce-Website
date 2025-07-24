@@ -24,6 +24,8 @@
         body {
             /* line-height: 1.5; */
             font-family: 'Poppins', sans-serif;
+            background: #fafbfc;
+            padding: 0 0 40px 0;
         }
 
         .navImg {
@@ -57,27 +59,26 @@
         .product-section {
             padding: 20px;
             display: flex;
+            justify-content: center;
         }
 
         .product-section .pro-collection {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-around;
+            justify-content: flex-start;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .product-section .product-cart {
-            width: 280px;
-            max-width: 300px;
+            width: 260px;
             border: 1px solid #ebebeb;
             padding: 13px;
-            margin: 10px;
             border-radius: 25px;
             position: relative;
             box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.02);
             transition: box-shadow 0.2s;
-            flex-grow: 1;
-            flex-basis: calc(33.333% - 20px);
-            /* Adjust this percentage to control the number of products per row */
             box-sizing: border-box;
         }
 
@@ -124,8 +125,30 @@
         a {
             text-decoration: none;
         }
-        main-img{
-            height:263px;
+        .main-img {
+            height: 263px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        /* Responsive grid for mobile */
+        @media (max-width: 900px) {
+            .product-section .pro-collection {
+                gap: 16px;
+            }
+            .product-section .product-cart {
+                width: 48%;
+                min-width: 200px;
+            }
+        }
+        @media (max-width: 600px) {
+            .product-section .pro-collection {
+                gap: 10px;
+            }
+            .product-section .product-cart {
+                width: 100%;
+                min-width: 0;
+            }
         }
     </style>
 </head>
@@ -137,32 +160,43 @@
         <a href="/"><i class="fa-solid fa-arrow-left fa-xs n"></i></a>
     </div>
 
-    <div>
-        <section class="product-section">
-            <div class="pro-collection">
-                {% for product in products %}
-                <div class="product-cart">
-                    {% set fname = url_for('static', filename='image/' + product.image) %}
-                    <a href="/shop/{{product.sno}}">
-                        <img src="{{ fname }}" alt="product image" class="main-img"/>
-                        <span>{{product.productname}}</span>
-                        <h4>{{product.productname}}</h4>
-                        <div class="stars">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                        </div>
-                    </a>
-                    <h4 class="price">INR {{product.price}}</h4>
-                    <a href="#"><i class="fa-solid fa-cart-shopping buy-icon"></i></a>
-                </div>
+    <!-- Sort Options Dropdown -->
+    <div style="text-align:center; margin-bottom: 20px;">
+      <form method="get" action="{{ url_for('shop') }}" style="display:inline-block;">
+        <label for="sort">Sort by:</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+          <option value="default">Default</option>
+          <option value="price_asc" {% if request.args.get('sort') == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_desc" {% if request.args.get('sort') == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+          <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Name: A-Z</option>
+          <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Name: Z-A</option>
+        </select>
+      </form>
+    </div>
+
+    <section class="product-section">
+        <div class="pro-collection">
+            {% for product in products %}
+            <div class="product-cart">
+                {% set fname = url_for('static', filename='image/' + product.image) %}
+                <a href="/shop/{{product.sno}}">
+                    <img src="{{ fname }}" alt="product image" class="main-img"/>
+                    <span>{{product.productname}}</span>
+                    <h4>{{product.productname}}</h4>
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                </a>
+                <h4 class="price">INR {{product.price}}</h4>
+                <a href="#"><i class="fa-solid fa-cart-shopping buy-icon"></i></a>
             </div>
             {% endfor %}
-    </div>
+        </div>
     </section>
-    </div>
 </body>
 
 </html>
