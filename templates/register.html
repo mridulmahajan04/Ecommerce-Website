@@ -5,16 +5,77 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="style/sign_up.css"> -->
     <link rel="stylesheet" href="{{ url_for('static',filename = 'style/sign_up.css')}}">
     <script src="https://kit.fontawesome.com/eec55b33f0.js" crossorigin="anonymous"></script>
-    <title>sign_up</title>
+    <title>Sign Up</title>
     <style>
         .z {
             color: white;
             position: absolute;
             top: 7%;
             left: 2%;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .z:hover {
+            color: #ff6b9d;
+            transform: scale(1.1);
+        }
+        
+        /* Improved flash message styling */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .btn-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        /* Enhanced form styling */
+        .form input {
+            transition: all 0.3s ease;
+        }
+        
+        .form input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+        }
+        
+        .form button {
+            transition: all 0.3s ease;
+        }
+        
+        .form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+        
+        /* Enhanced social icons */
+        .icon a {
+            transition: all 0.3s ease;
+        }
+        
+        .icon a:hover {
+            transform: scale(1.2);
+            color: #ff6b9d;
         }
     </style>
 </head>
@@ -24,44 +85,44 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" style="margin-top:20px;">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          <div class="alert alert-{{ category }}" style="background: {% if category == 'danger' %}linear-gradient(45deg, #ff4757, #ff3742){% elif category == 'success' %}linear-gradient(45deg, #2ed573, #1e90ff){% else %}linear-gradient(45deg, #3742fa, #5352ed){% endif %}; color: white; padding: 15px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span>{{ message }}</span>
+              <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
           </div>
         {% endfor %}
       {% endif %}
     {% endwith %}
-    <div class="background">
-
-    </div>
+    
+    <div class="background"></div>
+    
     <div class="container">
         <div class="item">
             <a href="/login">
                 <i class="fa-solid fa-arrow-left fa-lg z" name="i"></i>
             </a>
-            <!-- <h2><i class='bx bxl-xing'></i></h2> -->
             <h2>Welcome! <br><span>To our Website</span></h2>
-            <p>Fill out the form enteries To Became Memeber of our Website</p>
+            <p>Fill out the form entries to become a member of our website</p>
             <div class="icon">
-                <!-- <i class="fa-brands fa-twitter fa-xl"></i> -->
                 <a href="https://www.instagram.com/_ekart0001/"><i class="fa-brands fa-instagram fa-xl"></i></a>
-                <a href="https://www.facebook.com/profile.php?id=100093111963271"> <i
-                        class="fa-brands fa-facebook fa-xl"></i></a>
-                <a href="https://www.youtube.com/@MH-iz7yp"> <i class="fa-brands fa-youtube fa-lg"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=100093111963271"><i class="fa-brands fa-facebook fa-xl"></i></a>
+                <a href="https://www.youtube.com/@MH-iz7yp"><i class="fa-brands fa-youtube fa-lg"></i></a>
             </div>
         </div>
+        
         <div class="login">
             <h2>Sign Up</h2>
-            <form action="" class="form" method="POST" action="/register">
-                <input type="text" placeholder="Enter Username" class="input" name="username">
-                <input type="email" placeholder="Enter your Email" class="input" name="email">
-                <input type="password" placeholder="Enter your Password" class="input" name="pass"><br>
-                <label for=""><input type="checkbox" class="check" name="check">&nbsp;I agree with Conditions</label>
+            <form class="form" method="POST" action="/register">
+                <input type="text" placeholder="Enter Username" class="input" name="username" required>
+                <input type="email" placeholder="Enter your Email" class="input" name="email" required>
+                <input type="password" placeholder="Enter your Password" class="input" name="pass" required>
+                <br>
+                <label for=""><input type="checkbox" class="check" name="check" required>&nbsp;I agree with Terms & Conditions</label>
                 <button id="but" name="but">Sign up</button>
             </form>
         </div>
     </div>
 </body>
-
 
 </html>

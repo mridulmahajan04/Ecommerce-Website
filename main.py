@@ -74,6 +74,11 @@ class Coupan(db.Model):
     coupancode = db.Column(db.String(50), nullable=False)
     discount = db.Column(db.Integer, nullable=False)
 
+# Test route
+@app.route('/test')
+def test():
+    return "Application is working!"
+
 # Homepage
 @app.route('/')
 def home():
@@ -219,39 +224,61 @@ def addproduct():
         image = request.files['product_image1']
         image2 = request.files['product_image2']
         image3 = request.files['product_image3']
-        # Debug prints
-        print("UPLOAD_FOLDER:", app.config['UPLOAD_FOLDER'])
-        print("Image1 filename:", image.filename)
-        print("Image2 filename:", image2.filename)
-        print("Image3 filename:", image3.filename)
-        # Secure filenames
-        filename1 = secure_filename(image.filename)
-        filename2 = secure_filename(image2.filename)
-        filename3 = secure_filename(image3.filename)
-        print("Secure filename1:", filename1)
-        print("Secure filename2:", filename2)
-        print("Secure filename3:", filename3)
-        # Check for empty filenames
-        if not filename1 or not filename2 or not filename3:
-            flash('One or more images not selected or invalid file name.', 'danger')
+        
+        # Input validation
+        if not product_name or len(product_name) < 2:
+            flash('Product name must be at least 2 characters long.', 'danger')
             return redirect(request.url)
+        
+        if not validate_price(product_price):
+            flash('Please enter a valid price.', 'danger')
+            return redirect(request.url)
+        
+        if not description or len(description) < 10:
+            flash('Description must be at least 10 characters long.', 'danger')
+            return redirect(request.url)
+        
+        # File validation
+        if not all([image.filename, image2.filename, image3.filename]):
+            flash('Please select all three images.', 'danger')
+            return redirect(request.url)
+        
+        if not all(allowed_file(f.filename) for f in [image, image2, image3]):
+            flash('Only image files (png, jpg, jpeg, gif) are allowed!', 'danger')
+            return redirect(request.url)
+        
+        # Secure filenames with unique identifiers
+        filename1 = f"{uuid.uuid4().hex}_{secure_filename(image.filename)}"
+        filename2 = f"{uuid.uuid4().hex}_{secure_filename(image2.filename)}"
+        filename3 = f"{uuid.uuid4().hex}_{secure_filename(image3.filename)}"
+        
         # Ensure upload folder exists
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        # Full save paths
-        save_path1 = os.path.join(app.config['UPLOAD_FOLDER'], filename1)
-        save_path2 = os.path.join(app.config['UPLOAD_FOLDER'], filename2)
-        save_path3 = os.path.join(app.config['UPLOAD_FOLDER'], filename3)
-        print("Full save path1:", save_path1)
-        print("Full save path2:", save_path2)
-        print("Full save path3:", save_path3)
-        # Save images
-        image.save(save_path1)
-        image2.save(save_path2)
-        image3.save(save_path3)
+        
+        # Save images with error handling
+        try:
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename1))
+            image2.save(os.path.join(app.config['UPLOAD_FOLDER'], filename2))
+            image3.save(os.path.join(app.config['UPLOAD_FOLDER'], filename3))
+        except Exception as e:
+            flash('Failed to save images. Please try again.', 'danger')
+            print(f"Image save error: {e}")
+            return redirect(request.url)
+        
+        # Create product entry with database error handling
         entry = Products(productname=product_name, description=description, price=product_price, image=filename1,
                          image2=filename2, image3=filename3)
-        db.session.add(entry)
-        db.session.commit()
+        
+        try:
+            db.session.add(entry)
+            db.session.commit()
+            flash('Product added successfully!', 'success')
+            return redirect(url_for('admin'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Failed to add product. Please try again.', 'danger')
+            print(f"Product add error: {e}")
+            return redirect(request.url)
 
     return render_template('AddProduct.html')
 
@@ -278,23 +305,68 @@ def delete(id):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == "POST":
-        username = request.form.get('username')
-        email = request.form.get('email')
-        print(email)
-        passw = request.form.get('pass')
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        passw = request.form.get('pass', '').strip()
 
-        username1 = Register.query.filter_by(user=username).first()
-        email1 = Register.query.filter_by(email=email).first()
-        print(username1)
-        print(email1)
-        if(username1 or email1):
-            flash('User Already Existed with this credentials')
-        else:
+        # Input validation with specific error messages
+        if not username:
+            flash('Username is required.', 'danger')
+            return render_template('register.html')
+        
+        if not validate_username(username):
+            flash('Username must be 3-50 characters long and contain only letters, numbers, underscores, and hyphens.', 'danger')
+            return render_template('register.html')
+        
+        if not email:
+            flash('Email is required.', 'danger')
+            return render_template('register.html')
+        
+        if not validate_email(email):
+            flash('Please enter a valid email address.', 'danger')
+            return render_template('register.html')
+        
+        if not passw:
+            flash('Password is required.', 'danger')
+            return render_template('register.html')
+        
+        if len(passw) < 6:
+            flash('Password must be at least 6 characters long.', 'danger')
+            return render_template('register.html')
+
+        # Check for existing users
+        try:
+            username1 = Register.query.filter_by(user=username).first()
+            email1 = Register.query.filter_by(email=email).first()
+            
+            if username1:
+                flash('Username already exists. Please choose a different username.', 'danger')
+                return render_template('register.html')
+            
+            if email1:
+                flash('Email already registered. Please use a different email or login.', 'danger')
+                return render_template('register.html')
+            
             # Hash the password before storing it
             hashed_pw = generate_password_hash(passw)
             entry = Register(user=username, email=email, password=hashed_pw)
-            db.session.add(entry)
-            db.session.commit()
+            
+            # Database error handling
+            try:
+                db.session.add(entry)
+                db.session.commit()
+                flash('Registration successful! Please login.', 'success')
+                return redirect(url_for('login'))
+            except Exception as e:
+                db.session.rollback()
+                flash('Registration failed. Please try again.', 'danger')
+                print(f"Registration error: {e}")
+                return render_template('register.html')
+                
+        except Exception as e:
+            flash('Database connection error. Please try again.', 'danger')
+            print(f"Database error: {e}")
+            return render_template('register.html')
 
     return render_template('register.html')
 
@@ -302,37 +374,50 @@ def register():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = Register.query.filter_by(user=username).first()
-        # if not user :
-        #     flash('User not found.', 'danger')
-        #     return render_template('login.html')
-        # Now safe to access user.password
-        # Use environment variables for admin credentials
-        ADMIN_USER = os.getenv('ADMIN_USER')
-        ADMIN_PASS = os.getenv('ADMIN_PASS')
-        print(ADMIN_USER)
-        print(ADMIN_PASS)
-        if username == ADMIN_USER and password == ADMIN_PASS:
-            session['admin'] = username
-            flash('Hey! You are Successfully Logged in to Website as Admin', 'success')
-            return redirect(url_for("home")) 
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
         
-        # Check hashed password
-        if user and check_password_hash(user.password, password):
-            session['username'] = username
-            flash('Youre Successfully Logged into our website', 'success')
-            return redirect(url_for("home"))
-        
-        if user and not check_password_hash(user.password, password):
-            flash('The Password you entered is not Correct please Try Again', 'success')
-            # return redirect(url_for("login"))
+        print(f"Login attempt - Username: '{username}'")
 
-        else:
-            flash('Username and Password Does not Exist, Please Register your self first', 'success')
-            return render_template('register.html')
-    
+        # Input validation
+        if not username:
+            flash('Username is required.', 'danger')
+            return render_template('login.html')
+        
+        if not password:
+            flash('Password is required.', 'danger')
+            return render_template('login.html')
+
+        try:
+            user = Register.query.filter_by(user=username).first()
+            
+            # Use environment variables for admin credentials
+            ADMIN_USER = os.getenv('ADMIN_USER')
+            ADMIN_PASS = os.getenv('ADMIN_PASS')
+            
+            # Check admin login first
+            if username == ADMIN_USER and password == ADMIN_PASS:
+                session['admin'] = username
+                flash('Successfully logged in as Admin!', 'success')
+                return redirect(url_for("home")) 
+            
+            # Check regular user login
+            if user and check_password_hash(user.password, password):
+                session['username'] = username
+                flash('Successfully logged in!', 'success')
+                return redirect(url_for("home"))
+            
+            # Handle login failures
+            if user:
+                flash('Incorrect password. Please try again.', 'danger')
+            else:
+                flash('Username not found. Please register first.', 'danger')
+                return render_template('register.html')
+                
+        except Exception as e:
+            flash('Login error. Please try again.', 'danger')
+            print(f"Login error: {e}")
+            return render_template('login.html')
 
     return render_template('login.html')
  
@@ -398,16 +483,54 @@ class Contact_tb(db.Model):
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == "POST":
-        email = request.form.get('email')
-        mess = request.form.get('text')
-        entry = Contact_tb(email=email, message=mess, date=datetime.now())
-        db.session.add(entry)
-        db.session.commit()
-        mail.send_message('New Message from ' + email,
-                          sender=email,
-                          recipients=[os.getenv('GMAIL_USER')],
-                          body=mess
-                          )
+        email = request.form.get('email', '').strip()
+        mess = request.form.get('text', '').strip()
+        
+        print(f"Contact form submission - Email: '{email}'")
+        
+        # Input validation
+        if not email:
+            flash('Email is required.', 'danger')
+            return render_template('contact.html')
+        
+        if not validate_email(email):
+            flash('Please enter a valid email address.', 'danger')
+            return render_template('contact.html')
+        
+        if not mess:
+            flash('Message is required.', 'danger')
+            return render_template('contact.html')
+        
+        if len(mess) < 10:
+            flash('Message must be at least 10 characters long.', 'danger')
+            return render_template('contact.html')
+        
+        if len(mess) > 1000:  # Reasonable limit
+            flash('Message is too long. Please keep it under 1000 characters.', 'danger')
+            return render_template('contact.html')
+        
+        try:
+            entry = Contact_tb(email=email, message=mess, date=datetime.now())
+            db.session.add(entry)
+            db.session.commit()
+            
+            # Email error handling
+            try:
+                mail.send_message('New Message from ' + email,
+                                  sender=email,
+                                  recipients=[os.getenv('GMAIL_USER')],
+                                  body=mess
+                                  )
+                flash('Message sent successfully!', 'success')
+            except Exception as e:
+                flash('Message saved but email delivery failed. We will contact you soon.', 'warning')
+                print(f"Email error: {e}")
+                
+        except Exception as e:
+            db.session.rollback()
+            flash('Failed to send message. Please try again.', 'danger')
+            print(f"Contact error: {e}")
+            
     return render_template('contact.html')
 
 @app.route('/cart/<int:id>')
@@ -428,6 +551,56 @@ def validate_coupon():
     else:
         return jsonify({'error': 'Invalid coupon code.'})
 
+
+# Validation functions
+def validate_username(username):
+    """Validate username: 3-50 characters, alphanumeric only"""
+    if not username or not isinstance(username, str):
+        return False
+    username = username.strip()
+    if len(username) < 3 or len(username) > 50:
+        return False
+    # Allow alphanumeric characters, underscores, and hyphens
+    import re
+    return re.match(r'^[a-zA-Z0-9_-]+$', username) is not None
+
+def validate_email(email):
+    """Validate email format"""
+    if not email or not isinstance(email, str):
+        return False
+    email = email.strip()
+    if len(email) > 254:  # RFC 5321 limit
+        return False
+    import re
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
+
+def validate_price(price):
+    """Validate price: must be a positive number"""
+    if not price:
+        return False
+    try:
+        price_float = float(price)
+        return price_float > 0 and price_float < 1000000  # Reasonable upper limit
+    except (ValueError, TypeError):
+        return False
+
+def allowed_file(filename):
+    """Check if file extension is allowed"""
+    if not filename or not isinstance(filename, str):
+        return False
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Global error handlers
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
